@@ -12,5 +12,9 @@ public:
 	char* alloc(size_t size);
 	void reset();
 
+	const char* ptr();
+	size_t offset();
+	size_t size();
+
 	~Allocator();
 };

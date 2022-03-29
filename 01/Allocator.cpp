@@ -25,6 +25,21 @@ void Allocator::reset()
 	this->m_offset = 0;
 }
 
+const char* Allocator::ptr()
+{
+	return this->m_ptr;
+}
+
+size_t Allocator::offset()
+{
+	return this->m_offset;
+}
+
+size_t Allocator::size()
+{
+	return this->m_size;
+}
+
 Allocator::~Allocator()
 {
 	delete[] this->m_ptr;
