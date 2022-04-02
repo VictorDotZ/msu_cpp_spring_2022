@@ -8,7 +8,7 @@ test: TestAllocator.o Allocator.o
 	$(CC) $(FLAGS) -o Test.out TestAllocator.o Allocator.o $(TEST_FLAGS)
 	./Test.out
 
-test.o: TestAllocator.cpp
+test.o: TestAllocator.cpp Allocator.hpp
 	$(CC) $(FLAGS) -c TestAllocator.cpp $(TEST_FLAGS)
 
 allocator: main.o Allocator.o
