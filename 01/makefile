@@ -9,7 +9,7 @@ test: TestAllocator.o Allocator.o
 	./Test.out
 
 TestAllocator.o: TestAllocator.cpp Allocator.hpp
-	$(CC) $(FLAGS) -c TestAllocator.cpp $(TEST_FLAGS)
+	$(CC) $(FLAGS) -c TestAllocator.cpp
 
 Allocator.o: Allocator.cpp Allocator.hpp
 	$(CC) $(FLAGS) -c Allocator.cpp
