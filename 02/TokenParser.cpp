@@ -19,7 +19,7 @@ void TokenParser::parse(const std::string& str)
 		if (isSeparator(str.c_str()[i]) && !isSeparator(str.c_str()[i - 1])) {
 			end = i;
 
-			std::string token = str.substr(start, end);
+			std::string token = str.substr(start, end - start);
 
 			if (end - start == digitsInSubstring) {
 				digitTokenCallback(std::stoull(token));
