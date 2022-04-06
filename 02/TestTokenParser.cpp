@@ -40,8 +40,8 @@ protected:
 		digitTokens->push_back(digit);
 	};
 
-	std::function<void()> startCallback = []() {};
-	std::function<void()> endCallback = []() {};
+	std::function<void()> startCallback = nullptr;
+	std::function<void()> endCallback = nullptr;
 
 	size_t tokensCount = 0;
 	size_t stringTokensCount = 0;
