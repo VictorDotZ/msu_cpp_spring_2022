@@ -15,4 +15,4 @@ TokenParser.o: TokenParser.cpp TokenParser.hpp
 	$(CC) $(FLAGS) -c TokenParser.cpp
 
 clean:
-	rm -rf *.o *.out *.a 
+	rm -rf *.o *.out *.a
