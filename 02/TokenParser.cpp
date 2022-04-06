@@ -13,7 +13,7 @@ void TokenParser::parse(const std::string& str)
 		if (isSeparator(str.c_str()[i - 1]) && !isSeparator(str.c_str()[i]))
 			start = i;
 
-		if (std::isdigit(str.c_str()[i]))
+		if (std::isdigit(str.c_str()[i - 1]))
 			++digitsInSubstring;
 
 		if (isSeparator(str.c_str()[i]) && !isSeparator(str.c_str()[i - 1])) {
