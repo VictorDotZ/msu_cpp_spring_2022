@@ -6,7 +6,8 @@ void TokenParser::parse(const std::string& str)
 	size_t end = 0;
 	size_t digitsInSubstring = 0;
 
-	startCallback();
+	if (startCallback != nullptr)
+		startCallback();
 
 	for (size_t i = 1; i < str.size() + 1; ++i) {
 		if (isSeparator(str.c_str()[i - 1]) && !isSeparator(str.c_str()[i]))
@@ -21,16 +22,19 @@ void TokenParser::parse(const std::string& str)
 			std::string token = str.substr(start, end - start);
 
 			if (end - start == digitsInSubstring) {
-				digitTokenCallback(std::stoull(token));
+				if (digitTokenCallback != nullptr)
+					digitTokenCallback(std::stoull(token));
 			} else {
-				stringTokenCallback(token);
+				if (stringTokenCallback != nullptr)
+					stringTokenCallback(token);
 			}
 
 			digitsInSubstring = 0;
 		}
 	}
 
-	endCallback();
+	if (endCallback != nullptr)
+		endCallback();
 }
 
 bool TokenParser::isSeparator(const char& character)
