@@ -158,6 +158,18 @@ TEST_F(TestTokenParser, digitAndStringTokens)
 		EXPECT_EQ(digitTokens->at(i), trueDigitTokens[i]);
 }
 
+TEST_F(TestTokenParser, isSeparator)
+{
+	ASSERT_TRUE(parser->isSeparator(' '));
+	ASSERT_TRUE(parser->isSeparator('\t'));
+	ASSERT_TRUE(parser->isSeparator('\n'));
+	ASSERT_TRUE(parser->isSeparator('\0'));
+
+	ASSERT_FALSE(parser->isSeparator('0'));
+	ASSERT_FALSE(parser->isSeparator('1'));
+	ASSERT_FALSE(parser->isSeparator('a'));
+}
+
 int main(int argc, char* argv[])
 {
 	::testing::InitGoogleTest(&argc, argv);

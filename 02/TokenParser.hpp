@@ -11,11 +11,11 @@ public:
 
 	void parse(const std::string& str);
 
+	bool isSeparator(const char& character);
+
 private:
 	std::function<void(std::string&)> stringTokenCallback;
 	std::function<void(uint64_t)> digitTokenCallback;
 	std::function<void()> startCallback;
 	std::function<void()> endCallback;
-
-	bool isSeparator(const char& character);
 };
