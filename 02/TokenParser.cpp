@@ -1,5 +1,4 @@
 #include "TokenParser.hpp"
-#include <iostream>
 
 void TokenParser::parse(const std::string& str)
 {
