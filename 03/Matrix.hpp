@@ -1,13 +1,14 @@
 #pragma once
 #include <cstddef>
+#include <cstdint>
 
 class Matrix {
 	class MatrixProxy {
 	public:
 		MatrixProxy(size_t row, const Matrix* outer);
 
-		int operator[](const size_t column) const;
-		int& operator[](const size_t column);
+		int32_t operator[](const size_t column) const;
+		int32_t& operator[](const size_t column);
 
 	private:
 		size_t m_row;
@@ -23,7 +24,7 @@ public:
 	const MatrixProxy operator[](const size_t row) const;
 	MatrixProxy operator[](const size_t row);
 
-	Matrix& operator*=(const int num);
+	Matrix& operator*=(const int32_t num);
 
 	bool operator==(const Matrix& matrix) const;
 	bool operator!=(const Matrix& matrix) const;
@@ -31,7 +32,7 @@ public:
 	~Matrix();
 
 private:
-	int** m_matrix = nullptr;
+	int32_t** m_matrix = nullptr;
 	const size_t m_rows;
 	const size_t m_columns;
 };

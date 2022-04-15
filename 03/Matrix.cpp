@@ -8,14 +8,14 @@ Matrix::MatrixProxy::MatrixProxy(size_t row, const Matrix* outer)
 {
 }
 
-int Matrix::MatrixProxy::operator[](const size_t column) const
+int32_t Matrix::MatrixProxy::operator[](const size_t column) const
 {
 	if (column >= m_outer->m_columns)
 		throw std::out_of_range("");
 	return m_outer->m_matrix[m_row][column];
 }
 
-int& Matrix::MatrixProxy::operator[](const size_t column)
+int32_t& Matrix::MatrixProxy::operator[](const size_t column)
 {
 	if (column >= m_outer->m_columns)
 		throw std::out_of_range("");
@@ -29,9 +29,9 @@ Matrix::Matrix(const size_t rows, const size_t columns)
 	if (rows == 0 || columns == 0)
 		throw std::invalid_argument("");
 
-	m_matrix = new int*[rows];
+	m_matrix = new int32_t*[rows];
 	for (size_t i = 0; i < rows; i++)
-		m_matrix[i] = new int[columns];
+		m_matrix[i] = new int32_t[columns];
 }
 
 size_t Matrix::rows() const
@@ -58,7 +58,7 @@ Matrix::MatrixProxy Matrix::operator[](const size_t row)
 	return (MatrixProxy(row, this));
 }
 
-Matrix& Matrix::operator*=(const int num)
+Matrix& Matrix::operator*=(const int32_t num)
 {
 	for (size_t i = 0; i < m_rows; i++)
 		for (size_t j = 0; j < m_columns; j++)
