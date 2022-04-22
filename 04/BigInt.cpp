@@ -1,6 +1,7 @@
 #include "BigInt.hpp"
 
 #include <cstdlib>
+#include <iostream>
 
 BigInt::BigInt(const std::string& str)
 {
@@ -40,6 +41,9 @@ BigInt BigInt::operator-(const BigInt& other) const
 		result.m_num[i] = m_num[i] - other.m_num[i];
 	}
 
+	for (size_t i = minLen; i < maxLen; ++i)
+		result.m_num[i] = m_num[i];
+
 	return result;
 }
 
@@ -59,7 +63,7 @@ BigInt BigInt::operator+(const BigInt& other) const
 
 	for (size_t i = 0; i < minLen; ++i) {
 		result.m_num[i] = (m_num[i] + other.m_num[i] + residual) % 10;
-		residual = (m_num[i] + other.m_num[i]) / 10;
+		residual = (m_num[i] + other.m_num[i] + residual) / 10;
 	}
 
 	for (size_t i = minLen; i < maxLen; ++i) {
@@ -96,8 +100,9 @@ BigInt BigInt::productOf(const BigInt& longer, const BigInt& shorter) const
 		BigInt buffer = BigInt(std::string(maxLen * maxLen + 1, '0'));
 		uint16_t residual = 0;
 		for (size_t j = 0; j < maxLen; ++j) {
-			buffer.m_num[j + i] = (shorter.m_num[i] * longer.m_num[j] + residual) % 10;
-			residual = (shorter.m_num[i] * longer.m_num[j]) / 10;
+			uint16_t sum = shorter.m_num[i] * longer.m_num[j] + residual;
+			buffer.m_num[j + i] = sum % 10;
+			residual = sum / 10;
 		}
 		buffer.m_num[maxLen + i] = residual;
 		result = result + buffer;
@@ -192,7 +197,7 @@ BigInt::~BigInt()
 std::ostream& operator<<(std::ostream& os, const BigInt& num)
 {
 	size_t i = num.m_size;
-	while (num.m_num[i-- - 1] == 0) { }
+	while (num.m_num[i-- - 1] == 0 && i > 0) { }
 	for (i++; i > 0; --i)
 		os << num.m_num[i - 1];
 
