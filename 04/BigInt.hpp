@@ -8,6 +8,7 @@ public:
 	BigInt(const std::string& s);
 	BigInt(uint32_t number);
 	BigInt(const BigInt& other);
+	BigInt(BigInt&& other);
 
 	BigInt operator-(const BigInt& other) const;
 	BigInt operator-(uint32_t other) const;
@@ -16,6 +17,7 @@ public:
 	BigInt operator+(uint32_t other) const;
 
 	BigInt operator*(const BigInt& other) const;
+	BigInt operator*(uint32_t other) const;
 
 	BigInt& operator=(const BigInt& other);
 	BigInt& operator=(BigInt&& other);

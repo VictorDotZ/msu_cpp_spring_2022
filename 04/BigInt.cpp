@@ -25,6 +25,14 @@ BigInt::BigInt(const BigInt& other)
 		m_num[i] = other.m_num[i];
 };
 
+BigInt::BigInt(BigInt&& other)
+    : m_size(std::move(other.m_size))
+{
+	m_num = other.m_num;
+	other.m_num = nullptr;
+	other.m_size = 0;
+};
+
 BigInt BigInt::operator-(const BigInt& other) const
 {
 	size_t minLen = std::min(m_size, other.m_size);
@@ -88,6 +96,12 @@ BigInt BigInt::operator*(const BigInt& other) const
 	if (m_size < other.m_size)
 		return productOf(other, *this);
 	return productOf(*this, other);
+}
+
+BigInt BigInt::operator*(uint32_t other) const
+{
+	BigInt num = BigInt(other);
+	return this->operator*(num);
 }
 
 BigInt BigInt::productOf(const BigInt& longer, const BigInt& shorter) const
