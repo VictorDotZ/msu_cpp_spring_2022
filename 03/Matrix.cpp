@@ -66,6 +66,20 @@ Matrix& Matrix::operator*=(const int32_t num)
 	return *this;
 }
 
+Matrix Matrix::operator+(const Matrix& matrix) const
+{
+	if (m_columns != matrix.columns())
+		throw std::out_of_range("");
+	if (m_rows != matrix.rows())
+		throw std::out_of_range("");
+
+	Matrix out = Matrix(m_rows, m_columns);
+	for (size_t i = 0; i < m_rows; i++)
+		for (size_t j = 0; j < m_columns; j++)
+			out[i][j] = m_matrix[i][j] + matrix[i][j];
+	return out;
+}
+
 bool Matrix::operator==(const Matrix& matrix) const
 {
 	if (m_columns != matrix.columns())
@@ -89,4 +103,14 @@ Matrix::~Matrix()
 	for (size_t i = 0; i < m_rows; i++)
 		delete[] m_matrix[i];
 	delete[] m_matrix;
+}
+
+std::ostream& operator<<(std::ostream& out, const Matrix& matrix)
+{
+	for (size_t i = 0; i < matrix.rows(); ++i) {
+		for (size_t j = 0; j < matrix.columns(); ++j)
+			out << matrix[i][j] << '\t';
+		out << '\n';
+	}
+	return out;
 }
