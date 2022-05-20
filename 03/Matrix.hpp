@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <cstdint>
+#include <ostream>
 
 class Matrix {
 	class MatrixProxy {
@@ -26,8 +27,12 @@ public:
 
 	Matrix& operator*=(const int32_t num);
 
+	Matrix operator+(const Matrix& matrix) const;
+
 	bool operator==(const Matrix& matrix) const;
 	bool operator!=(const Matrix& matrix) const;
+
+	friend std::ostream& operator<<(std::ostream& out, const Matrix& atrix);
 
 	~Matrix();
 

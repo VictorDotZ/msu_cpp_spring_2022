@@ -7,58 +7,109 @@ class TestMatrix : public ::testing::Test {
 
 TEST_F(TestMatrix, zeroShape)
 {
-	EXPECT_THROW({
-		try {
-			Matrix matrix = Matrix(0, 0);
-		} catch (const std::invalid_argument& e) {
-			throw;
-		}
-	},
-	    std::invalid_argument);
-
-	EXPECT_THROW({
-		try {
-			Matrix matrix = Matrix(0, 1);
-		} catch (const std::invalid_argument& e) {
-			throw;
-		}
-	},
-	    std::invalid_argument);
-
-	EXPECT_THROW({
-		try {
-			Matrix matrix = Matrix(1, 0);
-		} catch (const std::invalid_argument& e) {
-			throw;
-		}
-	},
-	    std::invalid_argument);
+	EXPECT_THROW(Matrix matrix = Matrix(0, 0), std::invalid_argument);
+	EXPECT_THROW(Matrix matrix = Matrix(0, 1), std::invalid_argument);
+	EXPECT_THROW(Matrix matrix = Matrix(1, 0), std::invalid_argument);
 }
 
 TEST_F(TestMatrix, bounds)
 {
-	Matrix matrix = Matrix(2, 3);
+	size_t n = 2;
+	size_t m = 3;
+	Matrix matrix = Matrix(n, m);
 
-	ASSERT_EQ(matrix.rows(), 2);
-	ASSERT_EQ(matrix.columns(), 3);
+	ASSERT_EQ(matrix.rows(), n);
+	ASSERT_EQ(matrix.columns(), m);
 
-	EXPECT_THROW({
-		try {
-			matrix[0][4];
-		} catch (const std::out_of_range& e) {
-			throw;
-		}
-	},
-	    std::out_of_range);
+	EXPECT_THROW(matrix[0][m], std::out_of_range);
+	EXPECT_THROW(matrix[n][0], std::out_of_range);
+	EXPECT_THROW(matrix[n][m], std::out_of_range);
 
-	EXPECT_THROW({
-		try {
-			matrix[5][0];
-		} catch (const std::out_of_range& e) {
-			throw;
-		}
-	},
-	    std::out_of_range);
+	EXPECT_NO_THROW(matrix[0][m - 1]);
+	EXPECT_NO_THROW(matrix[n - 1][0]);
+	EXPECT_NO_THROW(matrix[n - 1][m - 1]);
+
+	Matrix matrix2 = Matrix(2, 4);
+	Matrix matrix3 = Matrix(3, 3);
+	Matrix matrix4 = Matrix(3, 2);
+
+	EXPECT_THROW(matrix + matrix2, std::out_of_range);
+	EXPECT_THROW(matrix + matrix3, std::out_of_range);
+	EXPECT_THROW(matrix + matrix4, std::out_of_range);
+}
+
+TEST_F(TestMatrix, bounds1N)
+{
+	size_t n = 1;
+	size_t m = 10;
+	Matrix matrix = Matrix(n, m);
+
+	ASSERT_EQ(matrix.rows(), n);
+	ASSERT_EQ(matrix.columns(), m);
+
+	EXPECT_THROW(matrix[0][m], std::out_of_range);
+	EXPECT_THROW(matrix[n][0], std::out_of_range);
+	EXPECT_THROW(matrix[n][m], std::out_of_range);
+
+	EXPECT_NO_THROW(matrix[0][m - 1]);
+	EXPECT_NO_THROW(matrix[n - 1][0]);
+	EXPECT_NO_THROW(matrix[n - 1][m - 1]);
+
+	Matrix matrix2 = Matrix(n, m - 1);
+	Matrix matrix3 = Matrix(n, m + 1);
+
+	EXPECT_THROW(matrix + matrix2, std::out_of_range);
+	EXPECT_THROW(matrix + matrix3, std::out_of_range);
+}
+
+TEST_F(TestMatrix, boundsN1)
+{
+	size_t n = 10;
+	size_t m = 1;
+	Matrix matrix = Matrix(n, m);
+
+	ASSERT_EQ(matrix.rows(), n);
+	ASSERT_EQ(matrix.columns(), m);
+
+	EXPECT_THROW(matrix[0][m], std::out_of_range);
+	EXPECT_THROW(matrix[n][0], std::out_of_range);
+	EXPECT_THROW(matrix[n][m], std::out_of_range);
+
+	EXPECT_NO_THROW(matrix[0][m - 1]);
+	EXPECT_NO_THROW(matrix[n - 1][0]);
+	EXPECT_NO_THROW(matrix[n - 1][m - 1]);
+
+	Matrix matrix2 = Matrix(n - 1, m);
+	Matrix matrix3 = Matrix(n + 1, m);
+
+	EXPECT_THROW(matrix + matrix2, std::out_of_range);
+	EXPECT_THROW(matrix + matrix3, std::out_of_range);
+}
+
+TEST_F(TestMatrix, bounds11)
+{
+	size_t n = 1;
+	size_t m = 1;
+	Matrix matrix = Matrix(n, m);
+
+	ASSERT_EQ(matrix.rows(), n);
+	ASSERT_EQ(matrix.columns(), m);
+
+	EXPECT_THROW(matrix[0][m], std::out_of_range);
+	EXPECT_THROW(matrix[n][0], std::out_of_range);
+	EXPECT_THROW(matrix[n][m], std::out_of_range);
+
+	EXPECT_NO_THROW(matrix[0][m - 1]);
+	EXPECT_NO_THROW(matrix[n - 1][0]);
+	EXPECT_NO_THROW(matrix[n - 1][m - 1]);
+
+	Matrix matrix2 = Matrix(n + 1, m);
+	Matrix matrix3 = Matrix(n, m + 1);
+	Matrix matrix4 = Matrix(n + 1, m + 1);
+
+	EXPECT_THROW(matrix + matrix2, std::out_of_range);
+	EXPECT_THROW(matrix + matrix3, std::out_of_range);
+	EXPECT_THROW(matrix + matrix4, std::out_of_range);
 }
 
 TEST_F(TestMatrix, initializationAndMultiplication)
@@ -143,6 +194,108 @@ TEST_F(TestMatrix, equality)
 
 	ASSERT_FALSE(matrix1 == matrix6);
 	ASSERT_TRUE(matrix1 != matrix6);
+}
+
+TEST_F(TestMatrix, addition)
+{
+	Matrix matrix1 = Matrix(3, 4);
+	Matrix matrix2 = Matrix(3, 4);
+
+	for (size_t i = 0; i < 3; ++i)
+		for (size_t j = 0; j < 4; ++j) {
+			matrix1[i][j] = 1 + i + j;
+			matrix2[i][j] = -1 * matrix1[i][j];
+		}
+
+	Matrix matrix3 = matrix1 + matrix2;
+	for (size_t i = 0; i < 3; ++i)
+		for (size_t j = 0; j < 4; ++j)
+			ASSERT_EQ(matrix3[i][j], 0);
+
+	for (size_t i = 0; i < 3; ++i)
+		for (size_t j = 0; j < 4; ++j) {
+			matrix1[i][j] = 1 + i + j;
+			matrix2[i][j] = matrix1[i][j];
+		}
+	Matrix matrix4 = matrix1 + matrix2;
+	matrix1 *= 2;
+	ASSERT_TRUE(matrix1 == matrix4);
+}
+
+TEST_F(TestMatrix, addition1N)
+{
+	size_t n = 1;
+	size_t m = 10;
+	Matrix matrix1 = Matrix(n, m);
+	Matrix matrix2 = Matrix(n, m);
+
+	for (size_t i = 0; i < n; ++i)
+		for (size_t j = 0; j < m; ++j) {
+			matrix1[i][j] = 1 + i + j;
+			matrix2[i][j] = -1 * matrix1[i][j];
+		}
+
+	Matrix matrix3 = matrix1 + matrix2;
+	for (size_t i = 0; i < n; ++i)
+		for (size_t j = 0; j < m; ++j)
+			ASSERT_EQ(matrix3[i][j], 0);
+
+	for (size_t i = 0; i < n; ++i)
+		for (size_t j = 0; j < m; ++j) {
+			matrix1[i][j] = 1 + i + j;
+			matrix2[i][j] = matrix1[i][j];
+		}
+	Matrix matrix4 = matrix1 + matrix2;
+	matrix1 *= 2;
+	ASSERT_TRUE(matrix1 == matrix4);
+}
+
+TEST_F(TestMatrix, additionN1)
+{
+	size_t n = 10;
+	size_t m = 1;
+	Matrix matrix1 = Matrix(n, m);
+	Matrix matrix2 = Matrix(n, m);
+
+	for (size_t i = 0; i < n; ++i)
+		for (size_t j = 0; j < m; ++j) {
+			matrix1[i][j] = 1 + i + j;
+			matrix2[i][j] = -1 * matrix1[i][j];
+		}
+
+	Matrix matrix3 = matrix1 + matrix2;
+	for (size_t i = 0; i < n; ++i)
+		for (size_t j = 0; j < m; ++j)
+			ASSERT_EQ(matrix3[i][j], 0);
+
+	for (size_t i = 0; i < n; ++i)
+		for (size_t j = 0; j < m; ++j) {
+			matrix1[i][j] = 1 + i + j;
+			matrix2[i][j] = matrix1[i][j];
+		}
+	Matrix matrix4 = matrix1 + matrix2;
+	matrix1 *= 2;
+	ASSERT_TRUE(matrix1 == matrix4);
+}
+
+TEST_F(TestMatrix, stream)
+{
+	Matrix matrix = Matrix(2, 3);
+
+	for (size_t i = 0; i < 2; ++i)
+		for (size_t j = 0; j < 3; ++j)
+			matrix[i][j] = 1 + i + j;
+
+	std::stringstream ss;
+	ss << matrix;
+	std::string s;
+
+	for (size_t i = 0; i < 2; ++i) {
+		for (size_t j = 0; j < 3; ++j) {
+			ss >> s;
+			ASSERT_EQ(s, std::to_string(1 + i + j));
+		}
+	}
 }
 
 int main(int argc, char* argv[])
