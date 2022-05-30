@@ -2,20 +2,24 @@
 #include <functional>
 #include <string>
 
+using UnconditionalCallback = std::function<void()>;
+using DigitTokenCallback = std::function<void(uint64_t)>;
+using StringTokenCallback = std::function<void(std::string&)>;
+
 class TokenParser {
 public:
-	void setStartCallback(std::function<void()> callback);
-	void setEndCallback(std::function<void()> callback);
-	void setDigitTokenCallback(std::function<void(uint64_t)> callback);
-	void setStringTokenCallback(std::function<void(std::string&)> callback);
+	void setStartCallback(UnconditionalCallback callback);
+	void setEndCallback(UnconditionalCallback callback);
+	void setDigitTokenCallback(DigitTokenCallback callback);
+	void setStringTokenCallback(StringTokenCallback callback);
 
 	void parse(const std::string& str);
 
 	bool isSeparator(const char& character);
 
 private:
-	std::function<void(std::string&)> stringTokenCallback = nullptr;
-	std::function<void(uint64_t)> digitTokenCallback = nullptr;
-	std::function<void()> startCallback = nullptr;
-	std::function<void()> endCallback = nullptr;
+	StringTokenCallback stringTokenCallback = nullptr;
+	DigitTokenCallback digitTokenCallback = nullptr;
+	UnconditionalCallback startCallback = nullptr;
+	UnconditionalCallback endCallback = nullptr;
 };

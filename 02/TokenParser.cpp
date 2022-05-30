@@ -1,9 +1,5 @@
 #include "TokenParser.hpp"
 
-using UnconditionalCallback = std::function<void()>;
-using DigitTokenCallback = std::function<void(uint64_t)>;
-using StringTokenCallback = std::function<void(std::string&)>;
-
 void TokenParser::parse(const std::string& str)
 {
 	size_t start = 0;
