@@ -24,6 +24,8 @@ private:
 	{
 		if (load(std::forward<T>(value)) == Error::CorruptedArchive)
 			return Error::CorruptedArchive;
+		if (!in_.eof())
+			return Error::CorruptedArchive;
 		return Error::NoError;
 	}
 

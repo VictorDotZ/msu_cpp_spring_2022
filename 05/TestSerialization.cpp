@@ -74,6 +74,28 @@ TEST_F(TestSerialization, SingleBoolField)
 	ASSERT_EQ(d4.load(y), Error::NoError);
 
 	ASSERT_EQ(y.a, false);
+
+	y = { true };
+
+	auto s5 = std::stringstream("0");
+	Deserializer d5(s5);
+	ASSERT_EQ(d5.load(y), Error::CorruptedArchive);
+
+	auto s6 = std::stringstream("1");
+	Deserializer d6(s6);
+	ASSERT_EQ(d6.load(y), Error::CorruptedArchive);
+
+	auto s7 = std::stringstream("1false");
+	Deserializer d7(s7);
+	ASSERT_EQ(d7.load(y), Error::CorruptedArchive);
+
+	auto s8 = std::stringstream("false0");
+	Deserializer d8(s8);
+	ASSERT_EQ(d8.load(y), Error::CorruptedArchive);
+
+	auto s9 = std::stringstream("18446744073709551616");
+	Deserializer d9(s9);
+	ASSERT_EQ(d9.load(y), Error::CorruptedArchive);
 }
 
 TEST_F(TestSerialization, SingleUintField)
@@ -110,6 +132,38 @@ TEST_F(TestSerialization, SingleUintField)
 	ASSERT_EQ(d5.load(y), Error::NoError);
 
 	ASSERT_EQ(y.a, 200);
+
+	y = { 100 };
+
+	auto s6 = std::stringstream("0");
+	Deserializer d6(s6);
+	ASSERT_EQ(d6.load(y), Error::NoError);
+
+	ASSERT_EQ(y.a, 0);
+
+	auto s7 = std::stringstream("1");
+	Deserializer d7(s7);
+	ASSERT_EQ(d7.load(y), Error::NoError);
+
+	ASSERT_EQ(y.a, 1);
+
+	auto s8 = std::stringstream("18446744073709551615");
+	Deserializer d8(s8);
+	ASSERT_EQ(d8.load(y), Error::NoError);
+
+	ASSERT_EQ(y.a, UINT64_MAX);
+
+	auto s9 = std::stringstream("18446744073709551616");
+	Deserializer d9(s9);
+	ASSERT_EQ(d9.load(y), Error::CorruptedArchive);
+
+	auto s10 = std::stringstream("42str");
+	Deserializer d10(s10);
+	ASSERT_EQ(d10.load(y), Error::CorruptedArchive);
+
+	auto s11 = std::stringstream("0false");
+	Deserializer d11(s11);
+	ASSERT_EQ(d11.load(y), Error::CorruptedArchive);
 }
 
 TEST_F(TestSerialization, MixedFields)
@@ -145,7 +199,7 @@ TEST_F(TestSerialization, MixedFields)
 	Deserializer d4(s4);
 	ASSERT_EQ(d4.load(y), Error::CorruptedArchive);
 
-	auto s5 = std::stringstream("100 true false 200 300 false");
+	auto s5 = std::stringstream("100 true false 200 300 false"); // deficiency
 	Deserializer d5(s5);
 	ASSERT_EQ(d5.load(y), Error::CorruptedArchive);
 
@@ -162,6 +216,12 @@ TEST_F(TestSerialization, MixedFields)
 	ASSERT_EQ(y.e, 300);
 	ASSERT_EQ(y.f, false);
 	ASSERT_EQ(y.g, 600);
+
+	y = { 0, true, true, 0, 0, true, 0 };
+
+	auto s7 = std::stringstream("100 false true 200 300 false 600 777"); // overabundance
+	Deserializer d7(s7);
+	ASSERT_EQ(d7.load(y), Error::CorruptedArchive);
 }
 
 int main(int argc, char* argv[])

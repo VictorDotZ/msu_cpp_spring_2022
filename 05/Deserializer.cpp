@@ -9,11 +9,14 @@ Error Deserializer::load(uint64_t& value)
 {
 	std::string uintFieldAsText;
 	in_ >> uintFieldAsText;
-	if (uintFieldAsText[0] == '-')
-		return Error::CorruptedArchive;
+	for (auto& elem : uintFieldAsText)
+		if (!std::isdigit(elem))
+			return Error::CorruptedArchive;
 	try {
 		value = std::stoull(uintFieldAsText);
 	} catch (std::invalid_argument&) {
+		return Error::CorruptedArchive;
+	} catch (std::out_of_range&) {
 		return Error::CorruptedArchive;
 	}
 	return Error::NoError;
