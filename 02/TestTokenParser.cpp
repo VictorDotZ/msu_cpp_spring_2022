@@ -158,6 +158,48 @@ TEST_F(TestTokenParser, digitAndStringTokens)
 		EXPECT_EQ(digitTokens->at(i), trueDigitTokens[i]);
 }
 
+TEST_F(TestTokenParser, suspiciousDigitTokens)
+{
+	std::string str = "42str 0zero 1one 0 18446744073709551616 18446744073709551615 1844674407370955161618446744073709551616";
+
+	parser->parse(str);
+
+	ASSERT_EQ(tokensCount, 7);
+	ASSERT_EQ(stringTokensCount, 5);
+	ASSERT_EQ(digitTokensCount, 2);
+
+	std::vector<std::string> trueStringTokens = { "42str", "0zero", "1one", "18446744073709551616", "1844674407370955161618446744073709551616" };
+
+	std::vector<uint64_t> trueDigitTokens = { 0, UINT64_MAX };
+
+	ASSERT_EQ(stringTokens->size(), trueStringTokens.size());
+
+	for (size_t i = 0; i < stringTokens->size(); ++i)
+		EXPECT_EQ(stringTokens->at(i), trueStringTokens[i]);
+
+	ASSERT_EQ(digitTokens->size(), trueDigitTokens.size());
+
+	for (size_t i = 0; i < digitTokens->size(); ++i)
+		EXPECT_EQ(digitTokens->at(i), trueDigitTokens[i]);
+}
+
+TEST_F(TestTokenParser, nullptrAsCallback)
+{
+	std::string str = "string 777";
+
+	parser->setStringTokenCallback(nullptr);
+	parser->setDigitTokenCallback(nullptr);
+
+	parser->parse(str);
+
+	ASSERT_EQ(tokensCount, 0);
+	ASSERT_EQ(stringTokensCount, 0);
+	ASSERT_EQ(digitTokensCount, 0);
+
+	ASSERT_EQ(stringTokens->size(), 0);
+	ASSERT_EQ(digitTokens->size(), 0);
+}
+
 TEST_F(TestTokenParser, isSeparator)
 {
 	ASSERT_TRUE(parser->isSeparator(' '));

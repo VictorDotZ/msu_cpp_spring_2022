@@ -1,5 +1,9 @@
 #include "TokenParser.hpp"
 
+using UnconditionalCallback = std::function<void()>;
+using DigitTokenCallback = std::function<void(uint64_t)>;
+using StringTokenCallback = std::function<void(std::string&)>;
+
 void TokenParser::parse(const std::string& str)
 {
 	size_t start = 0;
@@ -22,8 +26,15 @@ void TokenParser::parse(const std::string& str)
 			std::string token = str.substr(start, end - start);
 
 			if (end - start == digitsInSubstring) {
-				if (digitTokenCallback != nullptr)
-					digitTokenCallback(std::stoull(token));
+				if (digitTokenCallback != nullptr) {
+					uint64_t digitToken;
+					try {
+						digitToken = std::stoull(token);
+						digitTokenCallback(digitToken);
+					} catch (std::out_of_range& e) {
+						stringTokenCallback(token);
+					}
+				}
 			} else {
 				if (stringTokenCallback != nullptr)
 					stringTokenCallback(token);
@@ -42,22 +53,22 @@ bool TokenParser::isSeparator(const char& character)
 	return character == ' ' || character == '\t' || character == '\n' || character == '\0';
 }
 
-void TokenParser::setStringTokenCallback(std::function<void(std::string&)> callback)
+void TokenParser::setStringTokenCallback(StringTokenCallback callback)
 {
 	stringTokenCallback = callback;
 }
 
-void TokenParser::setDigitTokenCallback(std::function<void(uint64_t)> callback)
+void TokenParser::setDigitTokenCallback(DigitTokenCallback callback)
 {
 	digitTokenCallback = callback;
 }
 
-void TokenParser::setStartCallback(std::function<void()> callback)
+void TokenParser::setStartCallback(UnconditionalCallback callback)
 {
 	startCallback = callback;
 }
 
-void TokenParser::setEndCallback(std::function<void()> callback)
+void TokenParser::setEndCallback(UnconditionalCallback callback)
 {
 	endCallback = callback;
 }
