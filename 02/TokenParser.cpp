@@ -1,5 +1,7 @@
 #include "TokenParser.hpp"
 
+#include <stdexcept>
+
 void TokenParser::parse(const std::string& str)
 {
 	size_t start = 0;
